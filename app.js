@@ -9,6 +9,16 @@ const app = express();
 app.use(express.json());
 app.use(isAuth);
 
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', "*");
+    res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    next();
+})
+
 mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PWD}@cluster0-vpwls.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`
     , { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log("MONGO CONNECTION SUCCESSFULL"))
