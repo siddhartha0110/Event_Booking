@@ -1,7 +1,14 @@
 const Event = require('../../models/event')
 const User = require('../../models/user')
 const { dateToString } = require('../helpers/date');
+const DataLoader = require('dataloader');
 
+const eventLoader = new DataLoader(eventIds => {
+    return events(eventIds);
+});
+const userLoader = new DataLoader(userIds => {
+    return User.find({ _id: { $in: userIds } });
+})
 //events and user and singleEvent allow you go to create deeper objects as per your requirement
 const events = async eventIds => {
     try {
@@ -17,8 +24,8 @@ const events = async eventIds => {
 
 const singleEvent = async eventId => {
     try {
-        const event = await Event.findById(eventId);
-        return transformEvent(event);
+        const event = await eventLoader.load(eventId.toString());
+        return event;
     }
     catch (err) {
         throw err;
@@ -27,10 +34,10 @@ const singleEvent = async eventId => {
 
 const user = async userId => {
     try {
-        const user = await User.findById(userId);
+        const user = await userLoader.load(userId.toString());
         return {
             ...user._doc, _id: user.id,
-            createEvents: events.bind(this, user._doc.createEvents)
+            createEvents: () => eventLoader.loadMany(user._doc.createEvents)
         };
     }
     catch (err) {
