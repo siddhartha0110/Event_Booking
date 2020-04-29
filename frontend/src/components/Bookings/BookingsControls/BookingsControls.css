@@ -1,0 +1,20 @@
+.book-control {
+  text-align: center;
+  padding: 0.5rem;
+}
+.book-control button {
+  font: inherit;
+  border: none;
+  background: none;
+  padding: 0.25rem 3rem;
+  color: black;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+.book-control button.active {
+  border-bottom-color: #0abde3;
+  color: #0abde3;
+}
+.book-control button:focus {
+  outline: none;
+}

@@ -31,9 +31,10 @@ module.exports = {
         if (!checkPassword) {
             throw new Error("Incorrect Password");
         }
-        const token = jwt.sign({ userId: user.id, email: user.email }, 'someSecretKey', {
+        const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET, {
             expiresIn: '1h'
         });
+
         return { userId: user.id, token: token, tokenExpiration: 1 }
     }
 }

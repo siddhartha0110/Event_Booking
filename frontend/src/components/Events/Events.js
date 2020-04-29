@@ -48,12 +48,18 @@ class EventsPage extends Component {
             return
         const newCreatedEvent = {
             query: `
-            mutation{
-                createEvent(eventInput:{title:"${title}",description:"${description}",price:${price},date:"${date}"}){
+            mutation CreateEvent($title:String!,$description:String!,$price:Float!,$date:String!){
+                createEvent(eventInput:{title:$title,description:$description,price:$price,date:$date}){
                     _id title description date price
                 }
             }
-            `
+            `,
+            variables: {
+                title: title,
+                description: description,
+                price: price,
+                date: date
+            }
         };
         const token = this.context.token;
         //Send a request to the backend
@@ -143,14 +149,17 @@ class EventsPage extends Component {
 
         const BookingsQuery = {
             query: `
-            mutation{
-                bookEvent(eventId:"${this.state.selectedEvent._id}"){
+            mutation BookEvent($id:ID!){
+                bookEvent(eventId:$id){
                     _id
                     createdAt
                     updatedAt
                 }
             }
-            `
+            `,
+            variables: {
+                id: this.state.selectedEvent._id
+            }
         };
 
         //Send a request to the backend
